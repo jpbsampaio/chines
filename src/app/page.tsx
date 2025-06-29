@@ -22,6 +22,7 @@ export default function Home() {
   return (
     <main
       className="min-h-screen bg-gradient-to-br from-[#0f172a] to-[#1e293b] p-6 text-white flex flex-col items-center gap-8">
+
       <h1 className="text-4xl font-bold mt-6">Diário de Chinês</h1>
 
       <div className="w-full max-w-xl bg-[#1e293b] rounded-2xl shadow-lg p-6 flex flex-col gap-4">
@@ -44,18 +45,44 @@ export default function Home() {
       </div>
 
       <div className="w-full max-w-xl bg-[#1e293b] rounded-2xl shadow-lg p-6">
-        <h2 className="text-2xl mb-4 text-center">Traduções por dia</h2>
-        <Calendar
-          onChange={(date) => setSelectedDate(date as Date)}
-          value={selectedDate}
-          tileContent={({date}) => {
-            const key = date.toDateString();
-            return history[key] ? (
-              <div className="text-xs text-green-400 text-center mt-1">✓</div>
-            ) : null;
-          }}
-          className="rounded-xl overflow-hidden w-full"
-        />
+        <h2 className="text-2xl mb-4 text-center">Traduções do dia</h2>
+        <div className="flex justify-center w-full">
+          <Calendar
+            onChange={(date) => setSelectedDate(date as Date)}
+            value={selectedDate}
+            tileContent={({date}) => {
+              const key = date.toDateString();
+              return history[key] ? (
+                <div className="text-xs text-green-400 text-center mt-1">✓</div>
+              ) : null;
+            }}
+            className="rounded-xl overflow-hidden mx-auto bg-white text-black"
+            tileClassName="text-black"
+          />
+        </div>
+        <style jsx global>{`
+            .react-calendar button {
+                color: #000;
+            }
+
+            .react-calendar__month-view__weekdays {
+                color: #000;
+            }
+
+            .react-calendar__navigation button {
+                color: #000;
+            }
+
+            .react-calendar__tile--active {
+                background: #006edc;
+                color: white !important;
+            }
+
+            .react-calendar__tile--now {
+                background: #ffff76;
+                color: black !important;
+            }
+        `}</style>
         {history[selectedDate.toDateString()] && (
           <div className="mt-4 text-center">
             <p className="text-sm">Tradução de {selectedDate.toDateString()}:</p>
