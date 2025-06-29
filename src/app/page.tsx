@@ -1,22 +1,41 @@
 'use client';
 
-import {useState} from 'react';
+import { useState } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
-import {Input} from '@/components/Input/input';
-import {Button} from '@/components/Button/button';
+import { Input } from '@/components/Input/input';
+import { Button } from '@/components/Button/button';
+import HomeService from '@/service/home.service';
+import { ITraducao } from '@/interfaces/traducao.interface';
 
 export default function Home() {
   const [input, setInput] = useState('');
   const [translation, setTranslation] = useState('');
+  const [pinYin, setPinYin] = useState('');
+  const [audioPath, setAudioPath] = useState('');
+  const [loading, setLoading] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [history, setHistory] = useState<Record<string, string>>({});
 
-  const handleTranslate = () => {
-    const mockTranslation = '示例翻译';
-    const dateKey = selectedDate.toDateString();
-    setTranslation(mockTranslation);
-    setHistory((prev) => ({...prev, [dateKey]: mockTranslation}));
+  const handleTranslate = async () => {
+    if (!input.trim()) return;
+
+    try {
+      setLoading(true);
+      const traducao: ITraducao = await HomeService.postTraducao(input);
+
+      setTranslation(traducao.textZH);
+      setPinYin(traducao.pingYing);
+      setAudioPath(traducao.caminhoAudio);
+
+      const dateKey = selectedDate.toDateString();
+      setHistory((prev) => ({...prev, [dateKey]: traducao.textZH}));
+    } catch (error) {
+      console.error('Erro ao traduzir:', error);
+      alert('Não foi possível obter a tradução. Tente novamente.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -33,14 +52,30 @@ export default function Home() {
           placeholder="Ex: Eu gosto de estudar"
           className="text-black"
         />
-        <Button onClick={handleTranslate} className="bg-blue-600 hover:bg-blue-700 text-white">
-          Traduzir
+        <Button
+          onClick={handleTranslate}
+          className="bg-blue-600 hover:bg-blue-700 text-white"
+          disabled={loading}
+        >
+          {loading ? 'Traduzindo...' : 'Traduzir'}
         </Button>
 
         {translation && (
-          <div className="mt-4 p-4 bg-[#0f172a] rounded-xl text-xl text-center">
-            Tradução: <span className="font-semibold text-green-400">{translation}</span>
-          </div>
+          <>
+            <div className="mt-4 p-4 bg-[#0f172a] rounded-xl text-xl text-center">
+              <p className="mb-2">Tradução:</p>
+              <span className="font-semibold text-green-400">{translation}</span>
+              {pinYin && (
+                <p className="mt-2 text-sm text-yellow-300">{pinYin}</p>
+              )}
+            </div>
+            {audioPath && (
+              <div className="mt-4 p-4 bg-[#0f172a] rounded-xl text-xl text-center">
+                <p className="mb-2">Áudio:</p>
+                <audio controls src={audioPath} className="w-full mt-2" />
+              </div>
+            )}
+          </>
         )}
       </div>
 
