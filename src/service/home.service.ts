@@ -1,11 +1,9 @@
 import {ITraducao} from '@/interfaces/traducao.interface';
 
-const API_BASE_URL = 'https://sua-api.com/api';
-
 export class HomeService {
   static async postTraducao(texto: string): Promise<ITraducao> {
       try {
-        const response = await fetch(`https://4f4e-2804-214-4009-922-bc50-4af8-908d-a376.ngrok-free.app/api/traduzir`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${process.env.NEXT_PUBLIC_TRADUZIR}`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
