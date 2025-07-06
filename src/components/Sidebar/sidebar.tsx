@@ -18,7 +18,7 @@ export function Sidebar() {
       {/* Botão de toggle */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`fixed ${isOpen ? 'left-56' : 'left-4'} z-20 bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-full shadow-lg transition-all duration-300 w-10`}
+        className={`fixed ${isOpen ? 'left-64' : 'left-16'} top-1/2 -translate-y-1/2 -translate-x-1/2 z-20 bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-full shadow-lg transition-all duration-300 w-10 h-10 flex items-center justify-center`}
       >
         {isOpen ? '◀' : '▶'}
       </button>
